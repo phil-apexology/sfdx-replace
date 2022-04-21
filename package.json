@@ -1,7 +1,7 @@
 {
   "name": "sfdx-replace",
   "description": "Uses setting files to look for values and replace them in files. Useful for replacing endpoints / email addresses when deploying between environments",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Phil Spenceley",
   "bugs": "https://github.com/https://github.com/phil-apexology/sfdx-replace//issues",
   "dependencies": {
