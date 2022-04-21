@@ -85,7 +85,16 @@ export default class Settings extends SfdxCommand {
         if (data.indexOf(replacement.key) > -1) {
           // eslint-disable-next-line no-console
           console.log('replaced: ' + replacement.key + ' with: ' + replacement.value);
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('replacement: ' + replacement.key + ' not found.');
         }
+      }
+
+      if (data === result) {
+        // eslint-disable-next-line no-console
+        console.log('no replacements processed for file: ' + name);
+        return;
       }
 
       fs.writeFile(name, result, 'utf8', (writeError) => {
