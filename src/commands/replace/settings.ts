@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import { flags, SfdxCommand } from '@salesforce/command';
 import { Messages } from '@salesforce/core';
 import { Setting } from '../../models/setting';
+import { Replacement } from '../../models/replacement';
 
 // Initialize Messages with the current plugin directory
 Messages.importMessagesDirectory(__dirname);
@@ -49,17 +50,11 @@ export default class Settings extends SfdxCommand {
 
   private processReplacements(settings: Setting[]): void {
     for (const setting of settings) {
-      this.processReplacement(setting);
+      this.processPathReplacements(setting.path, setting.replacements, null);
     }
   }
 
-  private processReplacement(setting: Setting): void {
-    for (const replacement of setting.replacements) {
-      this.processReplacementDir(setting.path, replacement.key, replacement.value, null);
-    }
-  }
-
-  private processReplacementDir(dir: string, key: string, value: string, filesIn: string[]): void {
+  private processPathReplacements(dir: string, replacements: Replacement[], filesIn: string[]): void {
     let files: string[] = [];
     if (filesIn !== null) {
       files = filesIn;
@@ -70,28 +65,35 @@ export default class Settings extends SfdxCommand {
       // eslint-disable-next-line no-console
       console.log('processing: ' + name);
       if (fs.statSync(name).isDirectory()) {
-        this.processReplacementDir(name, key, value, files);
+        this.processPathReplacements(name, replacements, files);
       } else {
-        fs.readFile(name, 'utf8', (readError, data) => {
-          if (readError) {
-            // eslint-disable-next-line no-console
-            return console.log(readError);
-          }
-          const result = data.replace(key, value);
-          if (data === result) {
-            return;
-          }
-          // eslint-disable-next-line no-console
-          console.log('replaced: ' + key + ' with: ' + value);
-
-          fs.writeFile(name, result, 'utf8', (writeError) => {
-            // eslint-disable-next-line no-console
-            if (writeError) return console.log(writeError);
-            // eslint-disable-next-line no-console
-            console.log('writing: ' + name);
-          });
-        });
+        this.processFileReplacements(name, replacements);
       }
     }
+  }
+
+  private processFileReplacements(name: string, replacements: Replacement[]): void {
+    fs.readFile(name, 'utf8', (readError, data) => {
+      if (readError) {
+        // eslint-disable-next-line no-console
+        return console.log(readError);
+      }
+
+      let result = data;
+      for (const replacement of replacements) {
+        result = result.replace(replacement.key, replacement.value);
+        if (data.indexOf(replacement.key) > -1) {
+          // eslint-disable-next-line no-console
+          console.log('replaced: ' + replacement.key + ' with: ' + replacement.value);
+        }
+      }
+
+      fs.writeFile(name, result, 'utf8', (writeError) => {
+        // eslint-disable-next-line no-console
+        if (writeError) return console.log(writeError);
+        // eslint-disable-next-line no-console
+        console.log('writing: ' + name);
+      });
+    });
   }
 }
