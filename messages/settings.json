@@ -1,0 +1,7 @@
+{
+  "commandDescription": "process replacements in source files",
+  "inputFlagDescription": "the input settings file name",
+  "examples": [
+    "sfdx replace:settings --input ./buildfiles/environments/uat/settings.json"
+  ]
+}
