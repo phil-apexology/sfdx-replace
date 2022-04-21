@@ -21,7 +21,7 @@ $ npm install -g sfdx-replace
 $ sfdx COMMAND
 running command...
 $ sfdx (-v|--version|version)
-sfdx-replace/0.0.2 win32-x64 node-v16.7.0
+sfdx-replace/0.0.3 win32-x64 node-v16.7.0
 $ sfdx --help [COMMAND]
 USAGE
   $ sfdx COMMAND
@@ -51,7 +51,7 @@ EXAMPLE
   sfdx replace:settings --input ./buildfiles/environments/uat/settings.json
 ```
 
-_See code: [src/commands/replace/settings.ts](https://github.com/phil-apexology/sfdx-replace/blob/v0.0.2/src/commands/replace/settings.ts)_
+_See code: [src/commands/replace/settings.ts](https://github.com/phil-apexology/sfdx-replace/blob/v0.0.3/src/commands/replace/settings.ts)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
