@@ -67,6 +67,8 @@ export default class Settings extends SfdxCommand {
     const currentDirectoryFiles = fs.readdirSync(dir);
     for (const file of currentDirectoryFiles) {
       const name = dir + '/' + file;
+      // eslint-disable-next-line no-console
+      console.log('processing: ' + name);
       if (fs.statSync(name).isDirectory()) {
         this.processReplacementDir(name, key, value, files);
       } else {
@@ -75,12 +77,18 @@ export default class Settings extends SfdxCommand {
             // eslint-disable-next-line no-console
             return console.log(readError);
           }
-          const searchKey = '/{{' + key + '}}/g';
-          const result = data.replace(searchKey, value);
+          const result = data.replace(key, value);
+          if (data === result) {
+            return;
+          }
+          // eslint-disable-next-line no-console
+          console.log('replaced: ' + key + ' with: ' + value);
 
           fs.writeFile(name, result, 'utf8', (writeError) => {
             // eslint-disable-next-line no-console
             if (writeError) return console.log(writeError);
+            // eslint-disable-next-line no-console
+            console.log('writing: ' + name);
           });
         });
       }
