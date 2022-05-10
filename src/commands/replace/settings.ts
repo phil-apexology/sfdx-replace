@@ -59,16 +59,20 @@ export default class Settings extends SfdxCommand {
     if (filesIn !== null) {
       files = filesIn;
     }
-    const currentDirectoryFiles = fs.readdirSync(dir);
-    for (const file of currentDirectoryFiles) {
-      const name = dir + '/' + file;
-      // eslint-disable-next-line no-console
-      console.log('processing: ' + name);
-      if (fs.statSync(name).isDirectory()) {
-        this.processPathReplacements(name, replacements, files);
-      } else {
-        this.processFileReplacements(name, replacements);
+    if (fs.statSync(dir).isDirectory()) {
+      const currentDirectoryFiles = fs.readdirSync(dir);
+      for (const file of currentDirectoryFiles) {
+        const name = dir + '/' + file;
+        // eslint-disable-next-line no-console
+        console.log('processing: ' + name);
+        if (fs.statSync(name).isDirectory()) {
+          this.processPathReplacements(name, replacements, files);
+        } else {
+          this.processFileReplacements(name, replacements);
+        }
       }
+    } else {
+      this.processFileReplacements(dir, replacements);
     }
   }
 
